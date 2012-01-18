@@ -7,8 +7,11 @@ Configuration
 	node=node1
 	queue.size=10000
 	mode=amqp
-	ampq.connection=amqp://username:password@host:port/virtualhost
-	amqp.exchange=sigint
+	amqp=one, two
+	ampq.one.connection=amqp://username:password@host1:port/virtualhost
+	amqp.one.exchange=sigint
+	ampq.two.connection=amqp://username:password@host2:port/virtualhost
+	amqp.two.exchange=sigint
 	publishers=1
 
 * `application` The name of application
@@ -19,9 +22,11 @@ Configuration
 
 * `mode` Specifying the publish mode.  Valid values are 'noop' and 'amqp'.
 
-* `amqp.exchange` The name of the exchange to publish emissions into
+* `amqp` The list of keys for each broker to load-balance publish into
 
-* `ampq.connection` An AMQP URI describing how to connect to the AMQP broker
+* `amqp.<key>.exchange` The name of the exchange to publish emissions into for the <key> broker
+
+* `ampq.<key>.connection` An AMQP URI describing how to connect to the AMQP broker for <key>
 
 Fluent API
 ==========
@@ -108,3 +113,7 @@ ChangeLog
 v0.1 - 1/9/2012 - Emission Spec v1
 	
 	* Initial cut
+
+v0.2 - 1/18/2012 - Emission Spec v1
+	
+	* Added support for publishing into multiple AMQP brokers in a round-robin way.

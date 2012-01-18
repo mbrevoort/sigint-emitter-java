@@ -5,17 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Properties;
 
 
 public class SIGINTConfig {
 	private String appName;
 	private String nodeName;
-	private String amqpConnectionString;
-	private int numPublisherThreads;
 	private int maxQueueSize;
-	private String exchangeName;
-	private String mode;
+	private String mode;	
+	private final ArrayList<AmqpConfig> amqps = new ArrayList<AmqpConfig>();
 	
 	public String getAppName() {
 		return appName;
@@ -31,34 +30,21 @@ public class SIGINTConfig {
 		this.nodeName = nodeName;
 	}
 	
-	public String getAmqpConnectionString() {
-		return amqpConnectionString;
-	}
-	public void setAmqpConnectionString(String amqpConnectionString) {
-		this.amqpConnectionString = amqpConnectionString;
+	public void addAmqp(AmqpConfig amqp) {
+		amqps.add(amqp);
 	}
 	
-	public int getNumPublisherThreads() {
-		return numPublisherThreads;
+	public List<AmqpConfig> getAmqpConfigs() {
+		return amqps;
 	}
-	public void setNumPublisherThreads(int numPublisherThreads) {
-		this.numPublisherThreads = numPublisherThreads;
-	}
-	
+		
 	public int getMaxQueueSize() {
 		return maxQueueSize;
 	}
 	public void setMaxQueueSize(int maxQueueSize) {
 		this.maxQueueSize = maxQueueSize;
 	}
-	
-	public String getExchangeName() {
-		return exchangeName;
-	}
-	public void setExchangeName(String exchangeName) {
-		this.exchangeName = exchangeName;
-	}
-	
+		
 	public String getMode() {
 		return mode;
 	}
@@ -75,7 +61,7 @@ public class SIGINTConfig {
 	}
 	
 	private static void ensureProperties(Properties properties) {
-		String[] requiredProperties = new String[] {"ampq.connection", "application", "node", "amqp.exchange", "queue.size", "mode", "publishers"};
+		String[] requiredProperties = new String[] {"application", "node", "queue.size", "mode"};
 		ArrayList<String> missingProps = new ArrayList<String>();
 		
 		for(String key: requiredProperties) {
@@ -107,13 +93,31 @@ public class SIGINTConfig {
 
 		SIGINTConfig result = new SIGINTConfig();
 		
-		result.setAmqpConnectionString(properties.getProperty("ampq.connection"));
+		String amqpNamesString = properties.getProperty("amqp");
+		if(amqpNamesString != null && !amqpNamesString.isEmpty())
+		{
+			String[] amqpNames = amqpNamesString.split(",");
+			for(String amqpName: amqpNames)
+			{
+				String prefix = "amqp." + amqpName.trim() + ".";
+				String conn = properties.getProperty(prefix + "connection");
+				String exchange = properties.getProperty(prefix + "exchange");
+				
+				conn = (conn != null) ? conn.trim() : conn;
+				exchange = (exchange != null) ? exchange.trim() : exchange;
+				
+				if(conn == null)
+					throw new IllegalArgumentException("Invalid SIGINT configuration file: Missing property " + prefix + "connection");
+				if(exchange == null)
+					throw new IllegalArgumentException("Invalid SIGINT configuration file: Missing property " + prefix + "exchange");
+
+				result.addAmqp(new AmqpConfig(conn, exchange, "amqpName"));	
+			}
+		}
 		result.setAppName(properties.getProperty("application"));
 		result.setNodeName(properties.getProperty("node"));
-		result.setExchangeName(properties.getProperty("amqp.exchange"));
 		result.setMaxQueueSize(Integer.parseInt(properties.getProperty("queue.size")));
 		result.setMode(properties.getProperty("mode"));
-		result.setNumPublisherThreads(Integer.parseInt(properties.getProperty("publishers")));
 		
 		return result;		
 	}

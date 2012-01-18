@@ -16,9 +16,10 @@ public class ManagedAmqp implements PublishProvider {
 	public ManagedAmqp(SIGINTConfig config, ConnectionFactory factory, BlockingQueue<Emission<?>> emissionBuffer) throws Exception {
 		this.emissionBuffer = emissionBuffer;
 		
-		for(int i=0; i < config.getNumPublisherThreads(); i++) {
-			Thread publisherThread = new Thread(new AmqpPublishRunnable(factory, config.getAmqpConnectionString(), emissionBuffer, config.getExchangeName()));
-			publisherThread.setName("ManagedAmqp:publisher:" + i);
+		for(int i=0; i < config.getAmqpConfigs().size(); i++) {
+			AmqpConfig tmpConfig = config.getAmqpConfigs().get(i);
+			Thread publisherThread = new Thread(new AmqpPublishRunnable(factory, tmpConfig.getConnectionString(), emissionBuffer, tmpConfig.getExchangeName()));
+			publisherThread.setName("ManagedAmqp:publisher:" + tmpConfig.getKey());
 			publisherThread.setDaemon(true);
 			publisherThread.start();
 		}

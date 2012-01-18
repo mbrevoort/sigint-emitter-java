@@ -10,7 +10,6 @@ public class ManagedAmqpTest {
 	@Test
 	public void earliestEmissionsGetDumpedWhenBufferIsFull() throws Exception {
 		SIGINTConfig config = new SIGINTConfig();
-		config.setNumPublisherThreads(0); //0 so no publishers start up
 		config.setMaxQueueSize(10);
 		
 		ManagedAmqp ma = new ManagedAmqp(config);

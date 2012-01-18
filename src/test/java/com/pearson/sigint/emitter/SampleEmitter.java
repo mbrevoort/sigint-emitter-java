@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class SampleEmitter {
 
 	public static void main(String[] args) throws Exception {
-		final int numProducerThreads = 6;
+		final int numProducerThreads = 1;
 		final int numRunsPerThread = 10;
 		final int numEmissionsPerRun = 1000;
 		final int sleepTimeAtEndOfRun = 2000;
@@ -20,11 +20,10 @@ public class SampleEmitter {
 			final String appName = "javaApp1";
 			
 			SIGINTConfig config = new SIGINTConfig();
-			config.setAmqpConnectionString("amqp://localhost");
-			config.setExchangeName("sigint");
+			config.addAmqp(new AmqpConfig("amqp://localhost", "sigint", "one"));
+			config.addAmqp(new AmqpConfig("amqp://localhost", "sigint", "two"));
 			config.setMaxQueueSize(300000);
 			config.setMode("amqp");
-			config.setNumPublisherThreads(1);
 
 			config.setAppName(appName);
 			config.setNodeName(nodeName);
