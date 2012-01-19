@@ -12,7 +12,6 @@ Configuration
 	amqp.one.exchange=sigint
 	ampq.two.connection=amqp://username:password@host2:port/virtualhost
 	amqp.two.exchange=sigint
-	publishers=1
 
 * `application` The name of application
 
