@@ -8,6 +8,7 @@ import java.util.concurrent.BlockingQueue;
 
 import org.junit.Test;
 
+import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 import com.pearson.sigint.emitter.types.Emission;
 import com.pearson.sigint.emitter.types.Timer;
 import com.rabbitmq.client.Channel;
@@ -34,7 +35,7 @@ public class AmqpPublishRunnableTest {
 		Thread runner = new Thread(runnable);
 		runner.start();
 		
-		Timer timer = new Timer("app", "node", null);
+		Timer timer = new Timer("app", "node", null, FORMAT.BSON);
 		queue.offer(timer);
 		
 		Thread.sleep(TEST_SLEEP);
@@ -74,7 +75,7 @@ public class AmqpPublishRunnableTest {
 		Thread runner = new Thread(runnable);
 		runner.start();
 		
-		Timer timer = new Timer("app", "node", null);
+		Timer timer = new Timer("app", "node", null, FORMAT.BSON);
 		queue.offer(timer);
 		
 		Thread.sleep(TEST_SLEEP);
@@ -86,7 +87,7 @@ public class AmqpPublishRunnableTest {
 	
 	@Test
 	public void cleansUpAndReconnectsUponErrorDuringPublish() throws Exception {
-		Timer timer = new Timer("app", "node", null);
+		Timer timer = new Timer("app", "node", null, FORMAT.BSON);
 
 		Channel channel = mock(Channel.class);
 		doThrow(new IOException("test case")).when(channel).basicPublish("foo", Timer.TYPE(), AmqpPublishRunnable.MESSAGE_PROPS, timer.getBody());
@@ -117,7 +118,7 @@ public class AmqpPublishRunnableTest {
 	
 	@Test
 	public void handlesExceptionDuringCleanup() throws Exception {
-		Timer timer = new Timer("app", "node", null);
+		Timer timer = new Timer("app", "node", null, FORMAT.BSON);
 
 		Channel channel = mock(Channel.class);
 		doThrow(new IOException("test case")).when(channel).basicPublish("foo", Timer.TYPE(), AmqpPublishRunnable.MESSAGE_PROPS, timer.getBody());

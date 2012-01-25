@@ -3,6 +3,7 @@ package com.pearson.sigint.emitter;
 import org.junit.Assert;
 import org.junit.Test;
 
+import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 import com.pearson.sigint.emitter.types.Counter;
 
 public class ManagedAmqpTest {
@@ -16,7 +17,7 @@ public class ManagedAmqpTest {
 		
 		//Put 20 items in there...the last 10 should overwrite the first 10 because the max size is 10.
 		for(int i=0; i < 20; i++) {
-			new Counter("app1", "node" + i, ma).operation("op" + Integer.toString(i)).emit();
+			new Counter("app1", "node" + i, ma, FORMAT.BSON).operation("op" + Integer.toString(i)).emit();
 		}
 		
 		Assert.assertEquals("Queue size", 10, ma.getQueueSize());

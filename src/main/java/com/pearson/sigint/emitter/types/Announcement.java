@@ -5,12 +5,13 @@ import java.util.LinkedHashMap;
 import java.util.Map;
 
 import com.pearson.sigint.emitter.PublishProvider;
+import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 
 public class Announcement extends Emission<Announcement> {
 	public static String TYPE() { return "a"; }
 	
-	public Announcement(String app, String node, PublishProvider publisher) {
-		super(app, node, publisher);
+	public Announcement(String app, String node, PublishProvider publisher, FORMAT format) {
+		super(app, node, publisher, format);
 	}
 	
 	@Override

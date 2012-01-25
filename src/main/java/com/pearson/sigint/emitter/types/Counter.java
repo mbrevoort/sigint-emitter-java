@@ -1,12 +1,13 @@
 package com.pearson.sigint.emitter.types;
 
 import com.pearson.sigint.emitter.PublishProvider;
+import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 
 public class Counter extends Emission<Counter> {
 	public static String TYPE() { return "c"; }
 	
-	public Counter(String app, String node, PublishProvider publisher) {
-		super(app, node, publisher);
+	public Counter(String app, String node, PublishProvider publisher, FORMAT format) {
+		super(app, node, publisher, format);
 		times(1);
 	}
 	

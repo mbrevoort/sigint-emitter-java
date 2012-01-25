@@ -7,6 +7,7 @@ Configuration
 	node=node1
 	queue.size=10000
 	mode=amqp
+	format=bson|json
 	amqp=one, two
 	ampq.one.connection=amqp://username:password@host1:port/virtualhost
 	amqp.one.exchange=sigint
@@ -20,6 +21,8 @@ Configuration
 * `queue.size` The max number of emissions to be queued for sending.  The earliest queued entries will be dropped to make room for newer ones when the queue is full
 
 * `mode` Specifying the publish mode.  Valid values are 'noop' and 'amqp'.
+
+* `format` Specifying the publish format.  Valid values are 'bson' and 'json'.
 
 * `amqp` The list of keys for each broker to load-balance publish into
 
@@ -116,3 +119,7 @@ v0.1 - 1/9/2012 - Emission Spec v1
 v0.2 - 1/18/2012 - Emission Spec v1
 	
 	* Added support for publishing into multiple AMQP brokers in a round-robin way.
+
+v0.3 - 1/25/2012 - Emission Spec v1
+	
+	* Added config option to publish emissions in BSON or JSON.

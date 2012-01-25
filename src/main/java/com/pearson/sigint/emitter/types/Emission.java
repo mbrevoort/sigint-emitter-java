@@ -14,6 +14,7 @@ import org.codehaus.jackson.map.JsonMappingException;
 import org.codehaus.jackson.map.ObjectMapper;
 
 import com.pearson.sigint.emitter.PublishProvider;
+import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 
 import de.undercouch.bson4jackson.BsonFactory;
 import de.undercouch.bson4jackson.BsonModule;
@@ -25,13 +26,15 @@ public abstract class Emission<T extends Emission<T>> {
 	private final Map<String, Object> data = new LinkedHashMap<String, Object>();
 	
 	private final PublishProvider publisher;
+	private final FORMAT format;
 	
 	static {
 		om.registerModule(new BsonModule());
 	}
 	
-	public Emission(String app, String node, PublishProvider publisher) {
+	public Emission(String app, String node, PublishProvider publisher, FORMAT format) {
 		this.publisher = publisher;
+		this.format = format;
 		
 		data.put("w", (new Date()).getTime());
 		
@@ -58,10 +61,14 @@ public abstract class Emission<T extends Emission<T>> {
 	public abstract String getType();
 		
 	public byte[] getBody() throws IOException {
-		ByteArrayOutputStream baos = new ByteArrayOutputStream();
-		om.writeValue(baos, data);
-
-	    return baos.toByteArray();
+		if(this.format.equals(FORMAT.BSON)) {
+			ByteArrayOutputStream baos = new ByteArrayOutputStream();
+			om.writeValue(baos, data);
+	
+		    return baos.toByteArray();
+		}
+		
+		return getJson().getBytes();
 	}
 	
 	public String getJson() throws JsonGenerationException, JsonMappingException, IOException {

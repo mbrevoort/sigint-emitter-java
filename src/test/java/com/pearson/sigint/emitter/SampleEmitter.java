@@ -6,7 +6,7 @@ public class SampleEmitter {
 
 	public static void main(String[] args) throws Exception {
 		final int numProducerThreads = 1;
-		final int numRunsPerThread = 10;
+		final int numRunsPerThread = 1000;
 		final int numEmissionsPerRun = 1000;
 		final int sleepTimeAtEndOfRun = 2000;
 		final int sleepTimeBetweenEmissions = 0;

@@ -12,6 +12,7 @@ import org.codehaus.jackson.JsonGenerationException;
 import org.codehaus.jackson.map.JsonMappingException;
 import org.junit.Test;
 
+import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 import com.pearson.sigint.emitter.types.Announcement;
 import com.pearson.sigint.emitter.types.Counter;
 import com.pearson.sigint.emitter.types.Timer;
@@ -20,9 +21,9 @@ public class EmissionTest {
 
 	@Test
 	public void counter() throws JsonGenerationException, JsonMappingException, IOException {
-		Counter withTargetApp = new Counter("app1", "node1", null).againstApplication("app2").operation("op");
-		Counter withoutTargetApp = new Counter("app1", "node1", null).operation("op");
-		Counter withIncrement = new Counter("app1", "node1", null).operation("op").times(10);
+		Counter withTargetApp = new Counter("app1", "node1", null, FORMAT.BSON).againstApplication("app2").operation("op");
+		Counter withoutTargetApp = new Counter("app1", "node1", null, FORMAT.BSON).operation("op");
+		Counter withIncrement = new Counter("app1", "node1", null, FORMAT.BSON).operation("op").times(10);
 
 		String expected_withTargetApp = "{\"w\":" + withTargetApp._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"c\",\"d\":1,\"g\":\"app2\",\"o\":\"op\"}";
 		String expected_withoutTargetApp = "{\"w\":" + withoutTargetApp._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"c\",\"d\":1,\"o\":\"op\"}";
@@ -39,8 +40,8 @@ public class EmissionTest {
 		stack.put("java", "1.2.5");
 		stack.put("junit", "1.2.6");
 		
-		Announcement withSingleStack = new Announcement("app1", "node1", null).version("1.2.3").addStackItem("java", "1.2.4");
-		Announcement withListStack = new Announcement("app1", "node1", null).version("1.2.3").addStackItems(stack);
+		Announcement withSingleStack = new Announcement("app1", "node1", null, FORMAT.BSON).version("1.2.3").addStackItem("java", "1.2.4");
+		Announcement withListStack = new Announcement("app1", "node1", null, FORMAT.BSON).version("1.2.3").addStackItems(stack);
 
 		String expected_withSingleStack = "{\"w\":" + withSingleStack._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"a\",\"d\":{\"v\":\"1.2.3\",\"s\":[{\"n\":\"java\",\"v\":\"1.2.4\"}]}}";
 		String expected_withListStack = "{\"w\":" + withListStack._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"a\",\"d\":{\"v\":\"1.2.3\",\"s\":[{\"n\":\"java\",\"v\":\"1.2.5\"},{\"n\":\"junit\",\"v\":\"1.2.6\"}]}}";
@@ -51,8 +52,8 @@ public class EmissionTest {
 	
 	@Test
 	public void timer() throws JsonGenerationException, JsonMappingException, IOException {
-		Timer withTargetApp = new Timer("app1", "node1", null).againstApplication("app2").operation("op").duration(10);
-		Timer withoutTargetApp = new Timer("app1", "node1", null).operation("op").duration(11);
+		Timer withTargetApp = new Timer("app1", "node1", null, FORMAT.BSON).againstApplication("app2").operation("op").duration(10);
+		Timer withoutTargetApp = new Timer("app1", "node1", null, FORMAT.BSON).operation("op").duration(11);
 
 		String expected_withTargetApp = "{\"w\":" + withTargetApp._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"t\",\"g\":\"app2\",\"o\":\"op\",\"d\":10}";
 		String expected_withoutTargetApp = "{\"w\":" + withoutTargetApp._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"t\",\"o\":\"op\",\"d\":11}";
@@ -65,7 +66,7 @@ public class EmissionTest {
 	public void emitCallsPublish() {
 		ManagedAmqp amqp = mock(ManagedAmqp.class);
 		
-		new Timer("app1", "node1", amqp).emit();
+		new Timer("app1", "node1", amqp, FORMAT.BSON).emit();
 		
 		verify(amqp, times(1)).publish(any(Timer.class));
 	}

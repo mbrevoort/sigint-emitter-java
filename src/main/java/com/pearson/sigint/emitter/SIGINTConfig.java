@@ -10,6 +10,9 @@ import java.util.Properties;
 
 
 public class SIGINTConfig {
+	public enum FORMAT { BSON, JSON };
+	
+	private FORMAT format = FORMAT.BSON;
 	private String appName;
 	private String nodeName;
 	private int maxQueueSize;
@@ -58,6 +61,14 @@ public class SIGINTConfig {
 	
 	public boolean isNoop() {
 		return "noop".equals(this.mode);
+	}
+	
+	public FORMAT getFormat() {
+		return format;
+	}
+	
+	public void setFormat(FORMAT arg) {
+		this.format = arg;
 	}
 	
 	private static void ensureProperties(Properties properties) {
@@ -119,6 +130,10 @@ public class SIGINTConfig {
 		result.setMaxQueueSize(Integer.parseInt(properties.getProperty("queue.size")));
 		result.setMode(properties.getProperty("mode"));
 		
+		if(properties.containsKey("format")) {
+			result.setFormat(Enum.valueOf(FORMAT.class, properties.getProperty("format").trim().toUpperCase()));
+		}
+
 		return result;		
 	}
 	

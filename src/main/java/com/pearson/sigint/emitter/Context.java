@@ -19,14 +19,14 @@ public class Context {
 	}
 	
 	public Timer time(String operation) throws Exception {
-		return new Timer(config.getAppName(), config.getNodeName(), publisher).operation(operation);
+		return new Timer(config.getAppName(), config.getNodeName(), publisher, config.getFormat()).operation(operation);
 	}
 
 	public Counter count(String operation) throws Exception {
-		return new Counter(config.getAppName(), config.getNodeName(), publisher).operation(operation);
+		return new Counter(config.getAppName(), config.getNodeName(), publisher, config.getFormat()).operation(operation);
 	}
 
 	public Announcement announce() throws Exception {
-		return new Announcement(config.getAppName(), config.getNodeName(), publisher);
+		return new Announcement(config.getAppName(), config.getNodeName(), publisher, config.getFormat());
 	}
 }

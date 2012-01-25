@@ -1,12 +1,13 @@
 package com.pearson.sigint.emitter.types;
 
 import com.pearson.sigint.emitter.PublishProvider;
+import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 
 public class Timer extends Emission<Timer> {
 	public static String TYPE() { return "t"; }
 	
-	public Timer(String app, String node, PublishProvider publisher) {
-		super(app, node, publisher);
+	public Timer(String app, String node, PublishProvider publisher, FORMAT format) {
+		super(app, node, publisher, format);
 	}
 	
 	@Override
