@@ -16,6 +16,7 @@ import com.pearson.sigint.emitter.SIGINTConfig.FORMAT;
 import com.pearson.sigint.emitter.types.Announcement;
 import com.pearson.sigint.emitter.types.Counter;
 import com.pearson.sigint.emitter.types.Timer;
+import com.pearson.sigint.emitter.types.Error;
 
 public class EmissionTest {
 
@@ -62,6 +63,18 @@ public class EmissionTest {
 		Assert.assertEquals("withoutTargetApp", expected_withoutTargetApp, withoutTargetApp.getJson());
 	}
 	
+	@Test
+	public void error() throws JsonGenerationException, JsonMappingException, IOException {
+		Error withTargetApp = new Error(new Exception("something bad"), "app1", "node1", null, FORMAT.BSON).againstApplication("app2").operation("op");
+		Error withoutTargetApp = new Error(new Exception("something else bad"), "app1", "node1", null, FORMAT.BSON).operation("op");
+
+		String expected_withTargetApp = "{\"w\":" + withTargetApp._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"e\",\"d\":{\"msg\":\"something bad\"},\"g\":\"app2\",\"o\":\"op\"}";
+		String expected_withoutTargetApp = "{\"w\":" + withoutTargetApp._getTime() + ",\"v\":1,\"s\":{\"a\":\"app1\",\"n\":\"node1\"},\"t\":\"e\",\"d\":{\"msg\":\"something else bad\"},\"o\":\"op\"}";
+		
+		Assert.assertEquals("withTargetApp", expected_withTargetApp, withTargetApp.getJson());
+		Assert.assertEquals("withoutTargetApp", expected_withoutTargetApp, withoutTargetApp.getJson());
+	}
+
 	@Test
 	public void emitCallsPublish() {
 		ManagedAmqp amqp = mock(ManagedAmqp.class);

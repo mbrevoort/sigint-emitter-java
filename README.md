@@ -123,3 +123,7 @@ v0.2 - 1/18/2012 - Emission Spec v1
 v0.3 - 1/25/2012 - Emission Spec v1
 	
 	* Added config option to publish emissions in BSON or JSON.
+
+v0.4 - 2/1/2012 - Emission Spec v1
+	
+	* Added the Error emission type.
